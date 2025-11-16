@@ -1,20 +1,77 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+## Kids – Gestión educativa (Supabase + Vite)
 
-# Run and deploy your AI Studio app
+Este proyecto es una SPA ligera con HTML/JS (sin backend propio) y Supabase para:
+- Autenticación, roles y permisos (RLS)
+- CRUD de estudiantes, grados y tutores
+- Personal y tareas
+- Asistencia
+- Pagos y facturación
+- Actividades y multimedia (Storage)
+- Observaciones
+- Reportes (vistas SQL)
+- Mensajería, notificaciones y auditoría
 
-This contains everything you need to run your app locally.
+La navegación se hace con una pantalla de login (`index.html`) y un dashboard dinámico (`html/dashboard.html`).
 
-View your app in AI Studio: https://ai.studio/apps/drive/1W4_Zc8dLvm5yvrgPLdIHl66X2sNHxCVe
+### Requisitos
+- Node.js 18+
+- Una instancia de Supabase (URL + ANON KEY)
 
-## Run Locally
+### Configuración
+1) Instalar dependencias
+```
+npm install
+```
 
-**Prerequisites:**  Node.js
+2) Configurar variables públicas en `env.js`
+- Copia `env.example.js` a `env.js` y coloca tus valores de Supabase (URL y anon key)
 
+3) Crear el esquema en Supabase
+- En la consola de SQL de Supabase, ejecuta en orden:
+   - `supabase/schema.sql`
+   - `supabase/policies.sql`
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+4) Semillas de permisos
+- El `schema.sql` inserta permisos base (Dashboard, Usuarios y Roles, Estudiantes). Crea roles y asígnales permisos desde el módulo UI.
+
+### Ejecutar en local
+```
+npm run dev
+```
+- Abre `http://localhost:3000` para ver el login. Tras iniciar sesión te lleva al dashboard.
+
+### Despliegue
+- Vercel o Render pueden servir estáticos construidos con Vite.
+- Asegúrate de subir también `env.js` con tus credenciales públicas (anon key). No publiques la service role key.
+
+Opcional (Vercel):
+- Proyecto estático (framework: Vite). El comando de build `vite build` y output `dist/`.
+
+### Módulos implementados
+- Autenticación con Supabase (login, logout)
+- Usuarios/Roles: gestión de roles y permisos (UI). Nota: la creación/listado de usuarios de `auth.users` requiere backend/Edge Function (no se expone en cliente). Se oculta la sección de “Usuarios” en la UI; puedes asignar permisos a roles y consultar el rol del usuario actual mediante RLS.
+- Estudiantes: CRUD completo (crear, editar, archivar y eliminar)
+- Placeholders listos: grados, tutores, staff, tareas, asistencia, pagos, facturas, actividades, observaciones, reportes, notificaciones y auditoría
+
+### Notas importantes
+- Gestión de usuarios (crear/buscar otros usuarios) no es posible desde el cliente sin exponer la service role key. Para esto, usa:
+   - Panel de Supabase para crear usuarios, o
+   - Supabase Edge Functions (Node) con la service role key segura y endpoints protegidos.
+- RLS: El archivo `policies.sql` define políticas base de lectura para usuarios autenticados y escrituras simples por propietario. Ajusta según tus necesidades.
+
+### Estructura relevante
+- `index.html`: Login (JS: `index.js`)
+- `html/dashboard.html`: Layout con sidebar dinámico (JS: `js/dashboard.js`, `js/dynamic-sidebar.js`)
+- `html/users/users-roles.html` + `html/users/users-roles.js`: Roles y permisos
+- `html/students.html` + `html/students.js`: CRUD de estudiantes
+- `supabase/schema.sql`, `supabase/policies.sql`: Tablas y RLS
+- `supabaseClient.js`: Cliente Supabase (toma credenciales de `env.js`)
+- `js/ui.js`: utilidades (toasts, helpers)
+
+### Próximos pasos sugeridos
+- Agregar Edge Functions para:
+   - Alta de usuarios (admin) y listado paginado
+   - Reportes agregados (asistencia/finanzas) si exceden las capacidades de vistas
+- Implementar módulos pendientes usando los endpoints de Supabase y Storage
+- Añadir auditoría por triggers (INSERT en `audit_logs`) por tabla
+

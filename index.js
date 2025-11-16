@@ -1,4 +1,5 @@
-import supabase from 'supabaseClient';
+// Usar ruta relativa para que Vite resuelva correctamente
+import supabase from './supabaseClient.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     const loginForm = document.getElementById('loginForm');
@@ -33,6 +34,16 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         try {
+            // Permitir login por email o username
+            let credential = email;
+            if (credential && !credential.includes('@')) {
+                // Es un username: mapear a email vía RPC
+                const { data: mappedEmail, error: mapErr } = await supabase.rpc('get_email_by_username', { p_username: credential });
+                if (mapErr) throw mapErr;
+                if (!mappedEmail) throw new Error('Usuario no encontrado');
+                email = mappedEmail;
+            }
+
             const { error } = await supabase.auth.signInWithPassword({
                 email: email,
                 password: password,

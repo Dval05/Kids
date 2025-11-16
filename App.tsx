@@ -11,7 +11,7 @@ function App() {
                 <div className="px-6 py-4 border-b border-gray-700">
                     <h2 className="text-2xl font-semibold"><i className="fas fa-child text-blue-400"></i> NiceKids</h2>
                 </div>
-                {/* FIX: HTML comment `<!-- ... -->` converted to JSX comment `{/* ... */}` */}
+                {/* FIX: HTML comment `<!-- ... -->` converted to JSX comment `{/* ... */}` */
                 <nav id="sidebar-nav" className="flex-1 px-4 py-4 space-y-2">
                     {/* Los enlaces de navegación se insertarán aquí dinámicamente */}
                 </nav>

@@ -26,6 +26,30 @@
         </div>
     </div>
 
+        <!-- Modal: Personas sin usuario -->
+        <div id="pendingUsersModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black bg-opacity-50">
+            <div class="bg-white rounded-lg shadow-xl w-full max-w-3xl p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-2xl font-semibold">Personas sin usuario</h3>
+                    <button id="closePendingBtn" class="text-gray-500 hover:text-gray-800"><i class="fas fa-times"></i></button>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-left text-gray-500">
+                        <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3">Tipo</th>
+                                <th class="px-6 py-3">Nombre</th>
+                                <th class="px-6 py-3">Email</th>
+                                <th class="px-6 py-3">Rol</th>
+                                <th class="px-6 py-3">Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pendingTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
     <!-- Sección de Gestión de Roles -->
     <div class="bg-white p-6 rounded-lg shadow-md">
         <div class="flex justify-between items-center mb-4">
