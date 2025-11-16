@@ -41,11 +41,19 @@ npm run dev
 - Abre `http://localhost:3000` para ver el login. Tras iniciar sesión te lleva al dashboard.
 
 ### Despliegue
-- Vercel o Render pueden servir estáticos construidos con Vite.
-- Asegúrate de subir también `env.js` con tus credenciales públicas (anon key). No publiques la service role key.
+- Opción recomendada (Render con Docker): despliega frontend estático y endpoints PHP juntos.
+   1) Ya incluimos `Dockerfile` y `render.yaml`.
+   2) En Render, crea un servicio desde repo, selecciona "Blueprint" y apunta a `render.yaml`.
+   3) Define variables de entorno en Render:
+       - `SUPABASE_URL` = URL de tu proyecto Supabase
+       - `SUPABASE_ANON_KEY` = anon key pública para el cliente
+       - `SUPABASE_SERVICE_ROLE_KEY` = service role key (solo del lado servidor, usada por PHP)
+   4) `env.js` en producción: deja `PHP_BASE_URL` vacío (`''`) para usar misma-origin con Apache.
+   5) Render expondrá el puerto `$PORT` automáticamente; Apache corre en 80 dentro del contenedor.
 
-Opcional (Vercel):
-- Proyecto estático (framework: Vite). El comando de build `vite build` y output `dist/`.
+- Alternativa (Vercel):
+   - Si solo sirves el frontend, usa proyecto estático (framework: Vite). Build `vite build`, output `dist/`.
+   - Para endpoints, migra PHP a funciones serverless (Node/Edge) o usa un micro-servicio aparte (Render) y ajusta `PHP_BASE_URL` a ese dominio.
 
 ### Módulos implementados
 - Autenticación con Supabase (login, logout)
