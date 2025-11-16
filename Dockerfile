@@ -26,9 +26,7 @@ RUN printf '%s\n' \
 WORKDIR /var/www/html
 COPY . /var/www/html/
 
-# Configure Apache to listen on $PORT (Render sets it automatically)
-RUN sed -ri 's/^Listen 80$/Listen ${PORT:-80}/' /etc/apache2/ports.conf \
- && sed -ri 's#<VirtualHost \*:80>#<VirtualHost *:${PORT:-80}>#' /etc/apache2/sites-available/000-default.conf
+# Runtime adaptación del puerto: lo haremos con script de inicio, no en build.
 
 # Health endpoint (serves index.html by default)
 EXPOSE 80
@@ -38,4 +36,6 @@ ENV APACHE_RUN_USER www-data
 ENV APACHE_RUN_GROUP www-data
 ENV APACHE_LOG_DIR /var/log/apache2
 
-CMD ["bash", "-lc", "export PORT=${PORT:-80}; apache2-foreground"]
+COPY start-apache.sh /start-apache.sh
+RUN chmod +x /start-apache.sh
+CMD ["/start-apache.sh"]
